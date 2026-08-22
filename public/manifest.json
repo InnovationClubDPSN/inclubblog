@@ -1,0 +1,15 @@
+{
+  "short_name": "Innovation Club",
+  "name": "Innovation Club — DPS Newtown",
+  "icons": [
+    {
+      "src": "/images/school-logo-nav.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0b0b12",
+  "background_color": "#0b0b12"
+}
