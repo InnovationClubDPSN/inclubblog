@@ -1,1 +1,7 @@
 /secrets
+.idea
+node_modules
+.env.local
+dist
+.git
+package-lock.json

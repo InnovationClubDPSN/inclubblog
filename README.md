@@ -8,7 +8,18 @@ building.
 
 - **Blog** — dated posts organized into domains (categories), with comments,
   likes, an archive view, and per-post "repost" tools (downloadable
-  Instagram-story image, embeddable card, copy link).
+  Instagram-story image, embeddable card, copy link). A post can carry a
+  cover image plus a gallery of additional pictures; every one of those
+  pictures also appears on the site-wide Gallery.
+- **Blog Writers** (`/writers`) — every post's author and contributors,
+  aggregated into one directory with post counts and links back to what
+  they wrote. Matched against the member directory for an avatar/domain
+  where the names line up. Linked from the "Browse the Archive" section on
+  the homepage.
+- **Gallery** (`/gallery`) — dedicated gallery entries and every blog post's
+  pictures, merged into one grid. Click any picture to open it full-size in
+  a lightbox with next/prev navigation (arrow keys work too); post tiles
+  also link through to the article itself.
 - **Member directory** — every member's profile, role, domain, and the
   projects/posts they're linked to. Each profile shows a live attendance
   figure pulled from an external spreadsheet.

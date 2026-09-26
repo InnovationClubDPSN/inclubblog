@@ -26,6 +26,7 @@ const EmbedPost = lazy(() => import('@/pages/EmbedPost'));
 const MemberLogin = lazy(() => import('@/pages/MemberLogin'));
 const Portal = lazy(() => import('@/pages/Portal'));
 const Projects = lazy(() => import('@/pages/Projects'));
+const BlogWriters = lazy(() => import('@/pages/BlogWriters'));
 const MemberProfile = lazy(() => import('@/pages/MemberProfile'));
 
 const AppRoutes = () => (
@@ -47,6 +48,7 @@ const AppRoutes = () => (
             <Route path="/member-login" element={<MemberLogin />} />
             <Route path="/portal" element={<Portal />} />
             <Route path="/projects" element={<Projects />} />
+            <Route path="/writers" element={<BlogWriters />} />
             <Route path="*" element={<PageNotFound />} />
         </Routes>
     </Suspense>

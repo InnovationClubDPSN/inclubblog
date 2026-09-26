@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Clock, User, Users, Tag, ExternalLink, Lightbulb } from "lucide-react";
+import { ArrowLeft, Clock, User, Users, Tag, ExternalLink, Lightbulb, Expand } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { db } from "@/api/dataClient";
 import Navbar from "@/components/blog/Navbar";
@@ -9,11 +9,13 @@ import Footer from "@/components/blog/Footer";
 import DecorArt from "@/components/blog/DecorArt";
 import CommentsSection from "@/components/blog/CommentsSection";
 import RepostMenu from "@/components/blog/RepostMenu";
+import Lightbox from "@/components/blog/Lightbox";
 
 export default function ArticleDetail() {
     const { slug } = useParams();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [lightboxIndex, setLightboxIndex] = useState(null);
 
     useEffect(() => {
         let active = true;
@@ -95,6 +97,34 @@ export default function ArticleDetail() {
                                     onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
                                     className="h-auto max-h-[520px] w-full object-cover"
                                 />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Additional images -- also shown on the site-wide Gallery page */}
+                    {post.images?.length > 0 && (
+                        <div className="mx-auto max-w-4xl px-4 pt-6 md:px-8">
+                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                {post.images.map((src, i) => (
+                                    <button
+                                        key={i}
+                                        type="button"
+                                        onClick={() => setLightboxIndex(i)}
+                                        className="group relative block overflow-hidden border border-border"
+                                        aria-label="View image"
+                                    >
+                                        <img
+                                            src={src}
+                                            alt={`${post.title} ${i + 1}`}
+                                            loading="lazy"
+                                            onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
+                                            className="h-32 w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:h-40"
+                                        />
+                                        <span className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/40 group-hover:opacity-100">
+                                            <Expand className="h-4 w-4 text-white" />
+                                        </span>
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     )}
@@ -242,6 +272,14 @@ export default function ArticleDetail() {
             )}
 
             <Footer />
+            {post?.images?.length > 0 && (
+                <Lightbox
+                    images={post.images.map((src, i) => ({ src, alt: `${post.title} ${i + 1}` }))}
+                    index={lightboxIndex}
+                    onClose={() => setLightboxIndex(null)}
+                    onNavigate={setLightboxIndex}
+                />
+            )}
         </div>
     );
 }

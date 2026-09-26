@@ -205,3 +205,7 @@ safe to ship before this section is set up.
 - **Attendance** is pulled live from an external Google Sheet (exposed as
   JSON via a Google Apps Script web app) — see `src/lib/attendance.js` if
   you need to point it at a different sheet.
+- **Post images** (cover image + the extra picture gallery in the post
+  editor) upload to the same `uploads` storage bucket as everything else,
+  and are automatically shown on the public `/gallery` page alongside
+  dedicated gallery entries — no separate setup needed.

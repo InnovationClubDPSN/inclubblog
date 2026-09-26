@@ -198,6 +198,54 @@ post an update on it — and only the owner or an existing collaborator can
 change the collaborator list itself, so a non-collaborator can't add
 themselves.
 
+## Gallery: merging posts and dedicated entries
+
+`posts.images` (a `text[]`, alongside the existing single `cover_image`) lets
+a post carry a small picture gallery, uploaded the same way as everywhere
+else — `db.integrations.Core.UploadFile({ file })` into the `uploads`
+bucket, one URL per picture. `PostForm` has a second, multi-file picker for
+it (same pattern as `AdminGallery`'s picker, capped at 10 images), and
+`ArticleDetail` renders them as a grid under the cover image.
+
+`src/pages/Gallery.jsx` doesn't just read `db.entities.Gallery` — it also
+fetches `db.entities.Post`, turns every post that has a `cover_image` and/or
+`images` into a tile (`postToTile()`), and merges those with the dedicated
+gallery entries (`galleryToTile()`) into one array, sorted by
+`created_date`. A post-derived tile carries an `href` back to
+`/article/:slug` (rendered as a link on its caption title only, not the
+whole tile) and a small "From the blog" label; a dedicated gallery entry has
+neither. If you add another entity that should also surface on `/gallery`,
+write a `<thing>ToTile()` function with the same shape (`id`, `title`,
+`description`, `images`, `created_date`, `href`, `sourceLabel`) and fold it
+into the same merge.
+
+`src/components/blog/Lightbox.jsx` is the full-screen image viewer used by
+both `Gallery` and `ArticleDetail`'s picture grid: pass it a flat array of
+`{ src, alt, caption }` plus the open index, and it handles the overlay,
+Escape-to-close, and arrow-key/button navigation. `Gallery` flattens every
+tile's images into one array (`flatImages`) so the viewer can step
+continuously from one tile's last picture into the next tile's first;
+`ArticleDetail` just passes that one post's `images` array. To reuse it
+elsewhere, build a similar flat list and keep an `index` state variable —
+the component itself has no other dependency on where the images came from.
+
+## Blog Writers page
+
+`src/pages/BlogWriters.jsx` (`/writers`) doesn't read from a `writers`
+table — there isn't one. It fetches every post and every member, then
+`buildWriters()` aggregates by name: each post's `author` field and each
+entry in its `contributors` jsonb array becomes (or adds to) one writer,
+counted separately as "authored" vs. "contributed" so a name can be both.
+Each aggregated writer is matched against the member directory by a
+case-insensitive name lookup — a match adds an avatar, a domain, and a link
+through to `/member/:id`; no match just renders initials and a name. Because
+matching is name-based, a writer's `author` string on a post needs to match
+their member profile's `name` field exactly (case aside) for the two to
+link up — free-text authors that aren't in the roster (e.g. `"Innovation
+Club"`) show up fine, just without a member link. It's linked from the
+"Browse the Archive" section on the homepage (`src/components/blog/
+Archive.jsx`), not from the main navbar.
+
 ## Where to make common changes
 
 - **Add a new public page** — add a component under `src/pages/`, add a

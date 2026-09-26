@@ -12,6 +12,7 @@ const EMPTY = {
     tags: "",
     author: "",
     cover_image: "",
+    images: [],
     featured: false,
     body: "",
     links: "",
@@ -19,6 +20,8 @@ const EMPTY = {
     tech_tip: "",
     tech_tip_author: "",
 };
+
+const MAX_IMAGES = 10;
 
 function slugify(s) {
     return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
@@ -39,6 +42,7 @@ export default function PostForm({ editing, onSaved, onCancel }) {
                 tags: (editing.tags || []).join(", "),
                 links: (editing.links || []).join("\n"),
                 contributors: normContributors(editing.contributors),
+                images: Array.isArray(editing.images) ? [...editing.images] : [],
                 general: (editing.category || "") === "General",
             }
             : { ...EMPTY }
@@ -47,6 +51,7 @@ export default function PostForm({ editing, onSaved, onCancel }) {
     const [members, setMembers] = useState([]);
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [imagesUploading, setImagesUploading] = useState(0);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -84,6 +89,31 @@ export default function PostForm({ editing, onSaved, onCancel }) {
         }
     };
 
+    const onImagesUpload = async (e) => {
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+        const room = MAX_IMAGES - form.images.length;
+        if (room <= 0) {
+            toast({ title: `Max ${MAX_IMAGES} images per post`, variant: "destructive" });
+            return;
+        }
+        const picked = files.slice(0, room);
+        for (const file of picked) {
+            setImagesUploading((n) => n + 1);
+            try {
+                const { file_url } = await db.integrations.Core.UploadFile({ file });
+                setForm((f) => ({ ...f, images: [...f.images, file_url] }));
+            } catch (err) {
+                toast({ title: "Upload failed", description: String(err?.message || err), variant: "destructive" });
+            } finally {
+                setImagesUploading((n) => n - 1);
+            }
+        }
+        e.target.value = "";
+    };
+
+    const removeImage = (i) => setForm((f) => ({ ...f, images: f.images.filter((_, idx) => idx !== i) }));
+
     const submit = async (e) => {
         e.preventDefault();
         if (!form.title || !form.body) {
@@ -102,6 +132,7 @@ export default function PostForm({ editing, onSaved, onCancel }) {
             tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
             author: form.author || "Innovation Club",
             cover_image: form.cover_image,
+            images: form.images,
             featured: !!form.featured,
             body: form.body,
             read_time,
@@ -244,6 +275,27 @@ export default function PostForm({ editing, onSaved, onCancel }) {
                     )}
                 </div>
 
+                <div className="md:col-span-2">
+                    <label className={label}>additional images · {form.images.length}/{MAX_IMAGES} (also shown in the gallery)</label>
+                    <div className="flex flex-wrap gap-2">
+                        {form.images.map((src, i) => (
+                            <div key={i} className="relative h-20 w-20 overflow-hidden border border-border">
+                                <img src={src} alt={`image ${i + 1}`} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                                <button type="button" onClick={() => removeImage(i)} className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center bg-background/80 text-brand-pink hover:bg-background">
+                                    <X className="h-3 w-3" />
+                                </button>
+                            </div>
+                        ))}
+                        {form.images.length < MAX_IMAGES && (
+                            <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-brand-purple/50 text-brand-purple transition-colors hover:bg-brand-purple/10">
+                                {imagesUploading > 0 ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                                <span className="text-[8px] uppercase tracking-[0.1em]">{imagesUploading > 0 ? "uploading" : "add"}</span>
+                                <input type="file" accept="image/*" multiple onChange={onImagesUpload} className="hidden" />
+                            </label>
+                        )}
+                    </div>
+                </div>
+
                 <label className="flex items-center gap-3 md:col-span-2">
                     <input type="checkbox" checked={form.featured} onChange={set("featured")} className="accent-brand-purple" />
                     <span className={label}>featured (hero slot)</span>
@@ -268,7 +320,7 @@ export default function PostForm({ editing, onSaved, onCancel }) {
                 )}
                 <button
                     type="submit"
-                    disabled={saving}
+                    disabled={saving || imagesUploading > 0}
                     className="flex items-center gap-2 bg-brand-purple px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-black transition-colors hover:bg-brand-pink disabled:opacity-50"
                 >
                     <Save className="h-3 w-3" /> {editing?.id ? "Update" : "Publish"}

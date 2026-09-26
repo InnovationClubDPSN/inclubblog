@@ -78,6 +78,7 @@ create table if not exists public.posts (
     category         text default 'General',
     tags             text[] default '{}',
     cover_image      text,
+    images           text[] default '{}',
     author           text,
     contributors     jsonb default '[]',
     links            text[] default '{}',
@@ -88,6 +89,11 @@ create table if not exists public.posts (
     created_date     timestamptz not null default now(),
     updated_date     timestamptz not null default now()
 );
+
+-- Migration for projects that already had `posts` before `images` existed --
+-- a plain `create table if not exists` above won't add columns to a table
+-- that's already there.
+alter table public.posts add column if not exists images text[] default '{}';
 
 create index if not exists posts_category_idx on public.posts (category);
 create index if not exists posts_created_date_idx on public.posts (created_date desc);

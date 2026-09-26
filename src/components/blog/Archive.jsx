@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, PenLine } from "lucide-react";
 import ArticleCard from "./ArticleCard";
 
 export default function Archive({ posts, domains }) {
@@ -24,9 +25,17 @@ export default function Archive({ posts, domains }) {
     return (
         <section id="archive" className="border-b border-border py-20 md:py-28">
             <div className="mx-auto max-w-7xl px-4 md:px-8">
-                <div className="mb-10 border-b border-border pb-6">
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">02 — Article archive</span>
-                    <h2 className="mt-2 text-3xl font-bold uppercase tracking-tight md:text-5xl">Browse the Archive</h2>
+                <div className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+                    <div>
+                        <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">02 — Article archive</span>
+                        <h2 className="mt-2 text-3xl font-bold uppercase tracking-tight md:text-5xl">Browse the Archive</h2>
+                    </div>
+                    <Link
+                        to="/writers"
+                        className="group flex items-center gap-2 border border-brand-purple/40 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-purple transition-colors hover:bg-brand-purple hover:text-black"
+                    >
+                        <PenLine className="h-3.5 w-3.5" /> Meet the Writers
+                    </Link>
                 </div>
 
                 <div className="mb-10 border border-border bg-card">
