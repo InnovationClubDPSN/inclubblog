@@ -3,6 +3,7 @@ import { db } from "@/api/dataClient";
 import Navbar from "@/components/blog/Navbar";
 import CursorReticle from "@/components/blog/CursorReticle";
 import Hero from "@/components/blog/Hero";
+import CountdownBanner from "@/components/blog/CountdownBanner";
 import BlogFeed from "@/components/blog/BlogFeed";
 import About from "@/components/blog/About";
 import Archive from "@/components/blog/Archive";
@@ -44,6 +45,7 @@ export default function Home() {
             <Navbar />
             <main>
                 <Hero featured={featured} stats={stats} />
+                <CountdownBanner />
 
                 {loading ? (
                     <div className="border-b border-border py-32 text-center">
