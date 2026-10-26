@@ -171,6 +171,36 @@ create table if not exists public.announcements (
 
 create index if not exists announcements_created_date_idx on public.announcements (created_date desc);
 
+-- Cyber Awareness Week: brochures and posters admins upload (PDF or image).
+-- `posted_on` is the day the item was posted, so the page can group by day.
+create table if not exists public.cyber_week_items (
+    id           uuid primary key default gen_random_uuid(),
+    title        text not null,
+    kind         text not null default 'poster' check (kind in ('brochure', 'poster')),
+    file_url     text not null,
+    file_type    text not null default 'image' check (file_type in ('pdf', 'image')),
+    description  text,
+    posted_on    date not null default current_date,
+    created_date timestamptz not null default now(),
+    updated_date timestamptz not null default now()
+);
+
+create index if not exists cyber_week_items_posted_idx on public.cyber_week_items (posted_on desc, created_date desc);
+
+-- Single-row settings for the Cyber Awareness Week section. `enabled = false`
+-- hides the home-page section and the /cyber-week page entirely.
+create table if not exists public.cyber_week_settings (
+    singleton    boolean primary key default true check (singleton),
+    enabled      boolean not null default true,
+    website_url  text not null default 'https://cyberawarenessweek.vercel.app/',
+    starts_on    date not null default '2026-10-27',
+    ends_on      date not null default '2026-10-30',
+    created_date timestamptz not null default now(),
+    updated_date timestamptz not null default now()
+);
+
+insert into public.cyber_week_settings (singleton) values (true) on conflict (singleton) do nothing;
+
 -- ============================================================================
 -- updated_date trigger helper
 -- ============================================================================
@@ -185,7 +215,7 @@ $$;
 do $$
 declare t text;
 begin
-  foreach t in array array['profiles','domains','posts','galleries','projects','announcements'] loop
+  foreach t in array array['profiles','domains','posts','galleries','projects','announcements','cyber_week_items','cyber_week_settings'] loop
     execute format('drop trigger if exists set_updated_date on public.%I;', t);
     execute format('create trigger set_updated_date before update on public.%I for each row execute function public.set_updated_date();', t);
   end loop;
@@ -282,7 +312,7 @@ security definer
 set search_path = public, extensions
 as $$
 declare
-  allowed  text[] := array['posts', 'domains', 'galleries', 'profiles', 'announcements'];
+  allowed  text[] := array['posts', 'domains', 'galleries', 'profiles', 'announcements', 'cyber_week_items'];
   col_list text;
   sql      text;
   result   jsonb;
@@ -328,7 +358,7 @@ security definer
 set search_path = public, extensions
 as $$
 declare
-  allowed text[] := array['posts', 'domains', 'galleries', 'profiles', 'comments', 'project_updates', 'announcements'];
+  allowed text[] := array['posts', 'domains', 'galleries', 'profiles', 'comments', 'project_updates', 'announcements', 'cyber_week_items'];
 begin
   perform public.admin_resolve_token(p_token);
 
@@ -338,6 +368,41 @@ begin
 
   execute format('delete from public.%I where id = $1', p_table) using p_id;
   return true;
+end;
+$$;
+
+-- admin_save_cyber_week: the only write path for the single-row settings table.
+-- Only the keys present in p_patch are changed; everything else is kept.
+create or replace function public.admin_save_cyber_week(p_token text, p_patch jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+declare
+  result jsonb;
+begin
+  perform public.admin_resolve_token(p_token);
+
+  if p_patch is null or p_patch = '{}'::jsonb then
+    raise exception 'Empty payload';
+  end if;
+  if p_patch ? 'website_url' and p_patch->>'website_url' !~* '^https?://' then
+    raise exception 'Website must start with http:// or https://';
+  end if;
+
+  insert into public.cyber_week_settings (singleton) values (true) on conflict (singleton) do nothing;
+
+  update public.cyber_week_settings t set
+    enabled     = coalesce((p_patch->>'enabled')::boolean, t.enabled),
+    website_url = coalesce(p_patch->>'website_url', t.website_url),
+    starts_on   = coalesce((p_patch->>'starts_on')::date, t.starts_on),
+    ends_on     = coalesce((p_patch->>'ends_on')::date, t.ends_on),
+    updated_date = now()
+  where t.singleton
+  returning to_jsonb(t.*) into result;
+
+  return result;
 end;
 $$;
 
@@ -815,6 +880,17 @@ create policy "project_updates_select_all" on public.project_updates for select 
 drop policy if exists "announcements_select_all" on public.announcements;
 create policy "announcements_select_all" on public.announcements for select using (true);
 
+-- cyber_week: public read. Writes go through admin_write()/admin_delete_row()
+-- (items) and admin_save_cyber_week() (settings).
+alter table public.cyber_week_items enable row level security;
+alter table public.cyber_week_settings enable row level security;
+
+drop policy if exists "cyber_week_items_select_all" on public.cyber_week_items;
+create policy "cyber_week_items_select_all" on public.cyber_week_items for select using (true);
+
+drop policy if exists "cyber_week_settings_select_all" on public.cyber_week_settings;
+create policy "cyber_week_settings_select_all" on public.cyber_week_settings for select using (true);
+
 -- ============================================================================
 -- Storage bucket for uploads (gallery images, avatars, post covers, project
 -- update images, etc.)
@@ -875,6 +951,7 @@ grant execute on function public.admin_login(text) to anon, authenticated;
 grant execute on function public.admin_logout(text) to anon, authenticated;
 grant execute on function public.admin_write(text, text, uuid, jsonb) to anon, authenticated;
 grant execute on function public.admin_delete_row(text, text, uuid) to anon, authenticated;
+grant execute on function public.admin_save_cyber_week(text, jsonb) to anon, authenticated;
 
 grant execute on function public.member_login(text, text) to anon, authenticated;
 grant execute on function public.member_update_profile(text, jsonb) to anon, authenticated;

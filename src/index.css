@@ -271,6 +271,15 @@
     .cw-banner *, .cw-banner *::after { animation: none !important; }
 }
 
+/* ---- Cyber Awareness Week page: PDF card face ---- */
+.cw-pdf-face {
+    background-image:
+        radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0),
+        radial-gradient(ellipse at 20% 10%, rgba(100, 65, 255, 0.35), transparent 60%),
+        radial-gradient(ellipse at 85% 95%, rgba(255, 0, 102, 0.28), transparent 60%);
+    background-size: 14px 14px, 100% 100%, 100% 100%;
+}
+
 /* ---- Announcement board ---- */
 @keyframes ann-in {
     0%   { opacity: 0; transform: translateY(28px) scale(0.98); filter: blur(6px); }

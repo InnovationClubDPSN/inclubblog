@@ -7,6 +7,7 @@ import AdminDomains from "@/components/blog/AdminDomains";
 import AdminMembers from "@/components/blog/AdminMembers";
 import AdminGallery from "@/components/blog/AdminGallery";
 import AdminAnnouncements from "@/components/blog/AdminAnnouncements";
+import AdminCyberWeek from "@/components/blog/AdminCyberWeek";
 import PinKeypad from "@/components/blog/PinKeypad";
 import { LogOut } from "lucide-react";
 import { isAdminLoggedIn, logoutAdmin } from "@/lib/adminSession";
@@ -17,6 +18,7 @@ const TABS = [
     { id: "gallery", label: "Gallery" },
     { id: "members", label: "Members" },
     { id: "announcements", label: "Announcements" },
+    { id: "cyberweek", label: "Cyber Week" },
 ];
 
 export default function Admin() {
@@ -80,6 +82,7 @@ export default function Admin() {
                 {tab === "gallery" && <AdminGallery />}
                 {tab === "members" && <AdminMembers />}
                 {tab === "announcements" && <AdminAnnouncements />}
+                {tab === "cyberweek" && <AdminCyberWeek />}
             </main>
             <Footer />
         </div>

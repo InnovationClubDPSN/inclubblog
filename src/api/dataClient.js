@@ -22,6 +22,8 @@ import { getAdminToken } from '@/lib/adminSession';
 const TABLES = {
     Announcement: 'announcements',
     Comment: 'comments',
+    CyberWeekItem: 'cyber_week_items',
+    CyberWeekSettings: 'cyber_week_settings', // read-only here; write via db.cyberWeek.saveSettings
     Domain: 'domains',
     Gallery: 'galleries',
     Like: 'likes',
@@ -35,7 +37,7 @@ const TABLES = {
 // supabase/schema.sql. Create/update on these always route through the
 // admin_write() RPC below. Deletes on these plus a couple of admin-only-
 // delete tables route through admin_delete_row().
-const ADMIN_WRITE_TABLES = new Set(['posts', 'domains', 'galleries', 'profiles', 'announcements']);
+const ADMIN_WRITE_TABLES = new Set(['posts', 'domains', 'galleries', 'profiles', 'announcements', 'cyber_week_items']);
 const ADMIN_DELETE_TABLES = new Set([...ADMIN_WRITE_TABLES, 'comments', 'project_updates']);
 
 async function adminWrite(table, id, payload) {
@@ -161,4 +163,14 @@ const integrations = {
     },
 };
 
-export const db = { entities, integrations };
+// Cyber Awareness Week settings (single row). Only the keys present in `patch`
+// are changed: { enabled?, website_url?, starts_on?, ends_on? }.
+async function saveCyberWeekSettings(patch) {
+    const token = getAdminToken();
+    if (!token) throw new Error('Admin session expired -- please enter the PIN again');
+    const { data, error } = await supabase.rpc('admin_save_cyber_week', { p_token: token, p_patch: patch });
+    if (error) throw new Error(error.message?.replace(/^.*?:\s*/, '') || 'Save failed');
+    return data;
+}
+
+export const db = { entities, integrations, cyberWeek: { saveSettings: saveCyberWeekSettings } };

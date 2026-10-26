@@ -28,6 +28,7 @@ const Portal = lazy(() => import('@/pages/Portal'));
 const Projects = lazy(() => import('@/pages/Projects'));
 const BlogWriters = lazy(() => import('@/pages/BlogWriters'));
 const MemberProfile = lazy(() => import('@/pages/MemberProfile'));
+const CyberWeek = lazy(() => import('@/pages/CyberWeek'));
 
 const AppRoutes = () => (
     <Suspense fallback={null}>
@@ -49,6 +50,7 @@ const AppRoutes = () => (
             <Route path="/portal" element={<Portal />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/writers" element={<BlogWriters />} />
+            <Route path="/cyber-week" element={<CyberWeek />} />
             <Route path="*" element={<PageNotFound />} />
         </Routes>
     </Suspense>
