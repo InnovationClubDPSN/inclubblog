@@ -11,11 +11,13 @@ import Footer from "@/components/blog/Footer";
 import Reveal from "@/components/blog/Reveal";
 import Marquee from "@/components/blog/Marquee";
 import QotdWidget from "@/components/blog/QotdWidget";
+import AnnouncementBoard from "@/components/blog/AnnouncementBoard";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
     const [members, setMembers] = useState([]);
     const [domains, setDomains] = useState([]);
+    const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -24,12 +26,14 @@ export default function Home() {
             db.entities.Post.list("-created_date", 50),
             db.entities.Member.list("name", 100),
             db.entities.Domain.list("name", 100),
+            db.entities.Announcement.list("-created_date", 50),
         ])
-            .then(([p, m, d]) => {
+            .then(([p, m, d, a]) => {
                 if (!active) return;
                 setPosts(p.status === "fulfilled" ? p.value || [] : []);
                 setMembers(m.status === "fulfilled" ? m.value || [] : []);
                 setDomains(d.status === "fulfilled" ? d.value || [] : []);
+                setAnnouncements(a.status === "fulfilled" ? a.value || [] : []);
                 setLoading(false);
             });
         return () => { active = false; };
@@ -45,6 +49,7 @@ export default function Home() {
             <Navbar />
             <main>
                 <Hero featured={featured} stats={stats} />
+                <AnnouncementBoard items={announcements} />
                 <CyberWeekBanner />
 
                 {loading ? (
