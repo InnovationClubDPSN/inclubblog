@@ -48,9 +48,9 @@ export default function CyberWeek() {
         return () => { active = false; };
     }, []);
 
-    // Timeline reads oldest day first, so Day 01 comes first.
+    // Newest first: latest day on top, and the most recent upload first within each day.
     const sorted = useMemo(
-        () => [...items].sort((a, b) => (a.posted_on || "").localeCompare(b.posted_on || "") || (a.created_date || "").localeCompare(b.created_date || "")),
+        () => [...items].sort((a, b) => (b.posted_on || "").localeCompare(a.posted_on || "") || (b.created_date || "").localeCompare(a.created_date || "")),
         [items]
     );
 
@@ -65,7 +65,11 @@ export default function CyberWeek() {
         [sorted, filter]
     );
 
-    const groups = useMemo(() => groupByDay(visible), [visible]);
+    // Sorted again here so the newest day is on top regardless of how groupByDay orders its output.
+    const groups = useMemo(
+        () => [...groupByDay(visible)].sort((a, b) => (b.day || "").localeCompare(a.day || "")),
+        [visible]
+    );
 
     // Only image items go into the lightbox; PDFs open in their own viewer.
     const imageItems = useMemo(() => visible.filter((i) => !isPdf(i)), [visible]);
