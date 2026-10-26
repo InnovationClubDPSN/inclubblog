@@ -11,7 +11,6 @@ import Footer from "@/components/blog/Footer";
 import Reveal from "@/components/blog/Reveal";
 import Marquee from "@/components/blog/Marquee";
 import QotdWidget from "@/components/blog/QotdWidget";
-import AnnouncementBoard from "@/components/blog/AnnouncementBoard";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
@@ -48,8 +47,7 @@ export default function Home() {
             <CursorReticle />
             <Navbar />
             <main>
-                <Hero featured={featured} stats={stats} />
-                <AnnouncementBoard items={announcements} />
+                <Hero featured={featured} stats={stats} announcements={announcements} />
                 <CyberWeekBanner />
 
                 {loading ? (

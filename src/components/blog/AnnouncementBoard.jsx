@@ -24,26 +24,7 @@ const mdComponents = {
     code: ({ node: _n, ...props }) => <code className="ann-code" {...props} />,
 };
 
-function Ticker({ items }) {
-    const titles = items.map((a) => a.title).filter(Boolean);
-    if (!titles.length) return null;
-    // Duplicate the run so the -50% loop is seamless.
-    const run = [...titles, ...titles];
-    return (
-        <div className="ann-ticker relative overflow-hidden border-b border-border bg-background/80 py-2.5" aria-hidden="true">
-            <div className="ann-ticker-track flex w-max items-center gap-10 whitespace-nowrap">
-                {run.map((t, i) => (
-                    <span key={i} className="flex items-center gap-10 font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-                        <span className="text-brand-pink">✦</span>
-                        {t}
-                    </span>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-function AnnouncementCard({ a, index }) {
+export function AnnouncementCard({ a, index = 0 }) {
     const isNew = Date.now() - new Date(a.created_date).getTime() < DAY_MS;
 
     return (
@@ -91,40 +72,5 @@ function AnnouncementCard({ a, index }) {
                 )}
             </div>
         </article>
-    );
-}
-
-export default function AnnouncementBoard({ items = [] }) {
-    const active = activeAnnouncements(items);
-    if (!active.length) return null;
-
-    return (
-        <section className="ann-section relative overflow-hidden border-b border-border bg-background blueprint-grid">
-            <div aria-hidden="true" className="ann-orb ann-orb-a" />
-            <div aria-hidden="true" className="ann-orb ann-orb-b" />
-
-            <Ticker items={active} />
-
-            <div className="relative mx-auto max-w-7xl px-4 py-14 md:px-8 md:py-20">
-                <div className="mb-8 flex items-center gap-3">
-                    <span className="relative flex h-2.5 w-2.5">
-                        <span className="ann-ping absolute inline-flex h-full w-full rounded-full bg-brand-pink" />
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-pink" />
-                    </span>
-                    <h2 className="font-mono text-[11px] uppercase tracking-[0.35em] text-foreground">
-                        <span className="text-brand-pink">Live</span> / Announcements
-                    </h2>
-                    <span className="ml-auto hidden font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:inline">
-                        {String(active.length).padStart(2, "0")} active
-                    </span>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6">
-                    {active.map((a, i) => (
-                        <AnnouncementCard key={a.id} a={a} index={i} />
-                    ))}
-                </div>
-            </div>
-        </section>
     );
 }

@@ -1,8 +1,8 @@
 import { ArrowDown } from "lucide-react";
 import Counter from "@/components/blog/Counter";
-import DecorArt from "@/components/blog/DecorArt";
+import AnnouncementPreview from "@/components/blog/AnnouncementPreview";
 
-export default function Hero({ featured, stats }) {
+export default function Hero({ featured, stats, announcements }) {
     const s = stats || {};
     const lines = [
         { t: "Innovation", cls: "text-foreground", d: "0.15s" },
@@ -49,7 +49,7 @@ export default function Hero({ featured, stats }) {
                 </div>
 
                 <div className="fade-up flex flex-col justify-end border-t border-border py-10 md:col-span-4 md:border-l md:border-t-0 md:py-24 md:pl-8" style={{ animationDelay: "1.05s" }}>
-                    <DecorArt variant="orbit" className="mb-6 w-28 opacity-70" />
+                    <AnnouncementPreview items={announcements} />
                     <span className="mb-6 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Latest article</span>
                     {featured ? (
                         <a href="#feed" className="group block border border-border bg-card p-5 transition-colors hover:border-brand-purple/40">
