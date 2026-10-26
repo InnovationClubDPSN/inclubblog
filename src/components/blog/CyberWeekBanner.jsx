@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Zap } from "lucide-react";
 import { FALLBACK_POSTER, formatDay } from "@/lib/cyberWeek";
 
-export default function CyberWeekBanner({ posterUrl, startsOn, endsOn }) {
-    const poster = posterUrl || FALLBACK_POSTER;
+export default function CyberWeekBanner({ startsOn, endsOn }) {
+    const poster = FALLBACK_POSTER;
     const from = formatDay(startsOn, { day: "2-digit", month: "short" });
     const to = formatDay(endsOn, { day: "2-digit", month: "short", year: "numeric" });
 

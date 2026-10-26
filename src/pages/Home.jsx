@@ -11,7 +11,7 @@ import Footer from "@/components/blog/Footer";
 import Reveal from "@/components/blog/Reveal";
 import Marquee from "@/components/blog/Marquee";
 import QotdWidget from "@/components/blog/QotdWidget";
-import { normalizeSettings, latestPosterImage } from "@/lib/cyberWeek";
+import { normalizeSettings } from "@/lib/cyberWeek";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
@@ -19,7 +19,6 @@ export default function Home() {
     const [domains, setDomains] = useState([]);
     const [announcements, setAnnouncements] = useState([]);
     const [cyberSettings, setCyberSettings] = useState(() => normalizeSettings(null));
-    const [cyberItems, setCyberItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,9 +29,8 @@ export default function Home() {
             db.entities.Domain.list("name", 100),
             db.entities.Announcement.list("-created_date", 50),
             db.entities.CyberWeekSettings.list(null, 1),
-            db.entities.CyberWeekItem.list("-posted_on", 200),
         ])
-            .then(([p, m, d, a, cs, ci]) => {
+            .then(([p, m, d, a, cs]) => {
                 if (!active) return;
                 setPosts(p.status === "fulfilled" ? p.value || [] : []);
                 setMembers(m.status === "fulfilled" ? m.value || [] : []);
@@ -40,7 +38,6 @@ export default function Home() {
                 setAnnouncements(a.status === "fulfilled" ? a.value || [] : []);
                 // If the settings table is missing or unreadable, fall back to defaults (section stays on).
                 setCyberSettings(normalizeSettings(cs.status === "fulfilled" ? cs.value?.[0] : null));
-                setCyberItems(ci.status === "fulfilled" ? ci.value || [] : []);
                 setLoading(false);
             });
         return () => { active = false; };
@@ -58,7 +55,6 @@ export default function Home() {
                 <Hero featured={featured} stats={stats} announcements={announcements} />
                 {!loading && cyberSettings.enabled && (
                     <CyberWeekBanner
-                        posterUrl={latestPosterImage(cyberItems)}
                         startsOn={cyberSettings.starts_on}
                         endsOn={cyberSettings.ends_on}
                     />
