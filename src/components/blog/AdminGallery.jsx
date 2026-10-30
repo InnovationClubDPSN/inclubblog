@@ -1,3 +1,4 @@
+import Media, { MEDIA_ACCEPT } from "@/components/blog/Media";
 import { useEffect, useState } from "react";
 import { db } from "@/api/dataClient";
 import { useToast } from "@/components/ui/use-toast";
@@ -119,7 +120,7 @@ export default function AdminGallery() {
                             <div className="flex flex-wrap gap-2">
                                 {form.images.map((src, i) => (
                                     <div key={i} className="relative h-20 w-20 overflow-hidden border border-border">
-                                        <img src={src} alt={`img ${i + 1}`} className="h-full w-full object-cover" />
+                                        <Media src={src} alt={`img ${i + 1}`} preview className="h-full w-full object-cover" />
                                         <button type="button" onClick={() => removeImage(i)} className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center bg-background/80 text-brand-pink hover:bg-background">
                                             <X className="h-3 w-3" />
                                         </button>
@@ -129,7 +130,7 @@ export default function AdminGallery() {
                                     <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-brand-purple/50 text-brand-purple transition-colors hover:bg-brand-purple/10">
                                         {uploading > 0 ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                                         <span className="text-[8px] uppercase tracking-[0.1em]">{uploading > 0 ? "uploading" : "add"}</span>
-                                        <input type="file" accept="image/*" multiple onChange={onFiles} className="hidden" />
+                                        <input type="file" accept={MEDIA_ACCEPT} multiple onChange={onFiles} className="hidden" />
                                     </label>
                                 )}
                             </div>
@@ -161,7 +162,7 @@ export default function AdminGallery() {
                             <div key={g.id} className="border border-border bg-card">
                                 <div className="grid grid-cols-2 gap-0.5">
                                     {imgs.slice(0, 4).map((src, i) => (
-                                        <img key={i} src={src} alt={g.title} className="h-28 w-full object-cover" />
+                                        <Media key={i} src={src} alt={g.title} preview className="h-28 w-full object-cover" />
                                     ))}
                                 </div>
                                 <div className="p-4">

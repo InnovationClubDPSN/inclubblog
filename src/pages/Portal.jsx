@@ -1,3 +1,4 @@
+import Media, { MEDIA_ACCEPT } from "@/components/blog/Media";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "@/api/dataClient";
@@ -362,7 +363,7 @@ export default function Portal() {
                                                                 <div className="mt-2 flex flex-wrap gap-2">
                                                                     {u.images.map((img, k) => (
                                                                         <a key={k} href={img} target="_blank" rel="noreferrer" className="block h-16 w-16 overflow-hidden border border-border">
-                                                                            <img src={img} alt="" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                                                                            <Media preview src={img} alt="" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                                                                         </a>
                                                                     ))}
                                                                 </div>
@@ -388,7 +389,7 @@ export default function Portal() {
                                                 <label className="flex cursor-pointer items-center gap-2 border border-border px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:border-brand-purple hover:text-brand-purple">
                                                     {uploadingImages[pr.id] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
                                                     attach images
-                                                    <input type="file" accept="image/*" multiple className="hidden" disabled={uploadingImages[pr.id]} onChange={(e) => onPickImages(pr.id, e.target.files)} />
+                                                    <input type="file" accept={MEDIA_ACCEPT} multiple className="hidden" disabled={uploadingImages[pr.id]} onChange={(e) => onPickImages(pr.id, e.target.files)} />
                                                 </label>
                                                 <button onClick={() => addUpdate(pr.id)} disabled={postingUpdate[pr.id]} className="flex items-center gap-2 bg-brand-purple px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-black transition-colors hover:bg-brand-pink disabled:opacity-50">
                                                     {postingUpdate[pr.id] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />} post update
@@ -398,7 +399,7 @@ export default function Portal() {
                                                 <div className="mt-3 flex flex-wrap gap-2">
                                                     {(updateImages[pr.id] || []).map((img, k) => (
                                                         <div key={k} className="relative h-16 w-16 overflow-hidden border border-border">
-                                                            <img src={img} alt="" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                                                            <Media preview src={img} alt="" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                                                             <button type="button" onClick={() => removeImage(pr.id, k)} className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-background/80 text-brand-pink hover:bg-brand-pink hover:text-black">
                                                                 <X className="h-2.5 w-2.5" />
                                                             </button>

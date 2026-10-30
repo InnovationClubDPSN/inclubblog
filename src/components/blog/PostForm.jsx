@@ -1,3 +1,4 @@
+import Media, { MEDIA_ACCEPT } from "@/components/blog/Media";
 import { useEffect, useState } from "react";
 import { db } from "@/api/dataClient";
 import { useToast } from "@/components/ui/use-toast";
@@ -280,7 +281,7 @@ export default function PostForm({ editing, onSaved, onCancel }) {
                     <div className="flex flex-wrap gap-2">
                         {form.images.map((src, i) => (
                             <div key={i} className="relative h-20 w-20 overflow-hidden border border-border">
-                                <img src={src} alt={`image ${i + 1}`} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                                <Media preview src={src} alt={`image ${i + 1}`} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                                 <button type="button" onClick={() => removeImage(i)} className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center bg-background/80 text-brand-pink hover:bg-background">
                                     <X className="h-3 w-3" />
                                 </button>
@@ -290,7 +291,7 @@ export default function PostForm({ editing, onSaved, onCancel }) {
                             <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-brand-purple/50 text-brand-purple transition-colors hover:bg-brand-purple/10">
                                 {imagesUploading > 0 ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                                 <span className="text-[8px] uppercase tracking-[0.1em]">{imagesUploading > 0 ? "uploading" : "add"}</span>
-                                <input type="file" accept="image/*" multiple onChange={onImagesUpload} className="hidden" />
+                                <input type="file" accept={MEDIA_ACCEPT} multiple onChange={onImagesUpload} className="hidden" />
                             </label>
                         )}
                     </div>

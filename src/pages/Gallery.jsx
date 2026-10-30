@@ -1,3 +1,4 @@
+import Media from "@/components/blog/Media";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Expand } from "lucide-react";
@@ -124,7 +125,8 @@ export default function Gallery() {
                                                     className="group relative block w-full overflow-hidden"
                                                     aria-label="View image"
                                                 >
-                                                    <img
+                                                    <Media
+                                                        preview
                                                         src={src}
                                                         alt={`${g.title || "gallery"} ${i + 1}`}
                                                         className="w-full object-cover transition-transform duration-500 group-hover:scale-105"

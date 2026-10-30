@@ -1,3 +1,4 @@
+import Media from "@/components/blog/Media";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock, User, Users, Tag, ExternalLink, Lightbulb, Expand } from "lucide-react";
@@ -113,7 +114,8 @@ export default function ArticleDetail() {
                                         className="group relative block overflow-hidden border border-border"
                                         aria-label="View image"
                                     >
-                                        <img
+                                        <Media
+                                            preview
                                             src={src}
                                             alt={`${post.title} ${i + 1}`}
                                             loading="lazy"

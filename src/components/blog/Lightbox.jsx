@@ -1,3 +1,4 @@
+import Media from "@/components/blog/Media";
 import { useEffect } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -61,7 +62,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }) {
             )}
 
             <div className="flex max-h-full max-w-5xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
-                <img
+                <Media
                     src={img.src}
                     alt={img.alt || ""}
                     className="max-h-[80vh] w-auto max-w-full border border-white/10 object-contain"

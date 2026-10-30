@@ -1,3 +1,4 @@
+import Media from "@/components/blog/Media";
 import { useEffect, useState } from "react";
 import { db } from "@/api/dataClient";
 import Navbar from "@/components/blog/Navbar";
@@ -106,7 +107,7 @@ export default function Projects() {
                                                                 <div className="mt-2 flex flex-wrap gap-2">
                                                                     {u.images.map((img, k) => (
                                                                         <a key={k} href={img} target="_blank" rel="noreferrer" className="block h-16 w-16 overflow-hidden border border-border">
-                                                                            <img src={img} alt="" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                                                                            <Media preview src={img} alt="" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                                                                         </a>
                                                                     ))}
                                                                 </div>
