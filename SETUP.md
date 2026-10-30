@@ -7,7 +7,8 @@ This app runs on two services:
 
 There's no login system in the traditional sense: the admin console is
 unlocked with a PIN, and the member portal is unlocked with an admission
-number + password. Neither uses Supabase Auth.
+number + password. Neither uses Supabase Auth. (Supabase Auth is used only for the optional
+Google/GitHub sign-in for visitors, below.)
 
 Follow the steps below in order. Each one only takes a few minutes.
 
@@ -26,9 +27,15 @@ Follow the steps below in order. Each one only takes a few minutes.
    new project.
 2. Once it's ready, click **SQL Editor** in the left sidebar → **New query**.
 3. Paste in the entire contents of `supabase/schema.sql` and click **Run**.
-   This creates every table the app needs, the security rules that protect
-   them, all the database functions the app calls, and a public storage
-   bucket for uploaded images.
+   This creates every table the app needs (including the Cyber Awareness
+   Week tables), the security rules that protect them, all the database
+   functions the app calls, and a public storage bucket for uploaded files.
+   The schema is safe to re-run.
+
+   > Already set up the database before Cyber Week existed? Instead of
+   > re-running everything, run just `supabase/migrations/cyber_week.sql`
+   > once. It only adds the two Cyber Week tables and refreshes the admin
+   > write functions; no existing data is touched.
 4. Click **Project Settings** (gear icon) → **API**. You'll need two values
    from this page in the next step:
    - **Project URL**
@@ -87,14 +94,14 @@ a CSV — see the admin panel's built-in guide), and the **Domains** and
 
 ## Step 4: Add the club's images
 
-Four images are already wired up throughout the site (navbar logo, about
-page, footer, homepage photo) — drop your own files into `public/images/`
-using these exact names:
+Five images are already wired up throughout the site — drop your own files
+into `public/images/` using these exact names:
 
 - `club-logo.png`
 - `school-logo-nav.png`
 - `school-logo-about.png`
 - `school-photo.png`
+- `poster/csaw.jpg` (the poster shown on the homepage Cyber Week banner)
 
 Vite serves everything in `public/` from the site root, so once they're in
 place, `/images/club-logo.png` etc. just works — no code changes needed.
@@ -118,7 +125,27 @@ correctly on refresh.
 
 ---
 
-## Optional: Google sign-in for visitors
+## Optional: Cyber Awareness Week
+
+A homepage banner plus a `/cyber-week` page of brochures and posters. It
+works with no setup beyond the schema (or the migration, Step 1) — until an
+admin edits it, it uses defaults (27–30 Oct 2026 and the event's website
+link, from `src/lib/cyberWeek.js`).
+
+1. Open `/admin` → **Cyber Week**.
+2. Set the official website link and the start/end dates (these drive the
+   "Day 01…" labels and the banner's date range), and use the switch to
+   turn the whole section on or off.
+3. Use **New upload** to add a brochure or poster (PDF, JPG, PNG or WEBP),
+   with a title, type, and "posted on" date. Items are grouped by that date.
+   To replace a file, delete the item and upload it again.
+
+The banner's poster image is the static file `public/images/poster/csaw.jpg`
+(Step 4), not an upload from the admin tab.
+
+---
+
+## Optional: Google / GitHub sign-in for visitors
 
 Lets people who are *not* club members sign in (e.g. to answer the Question
 of the Day) without touching the member directory. Skip this section if you
@@ -128,7 +155,9 @@ don't need it — the rest of the site works fine without it.
    it on and fill in a Google OAuth Client ID/Secret (create one in
    [Google Cloud Console](https://console.cloud.google.com/apis/credentials),
    OAuth client type "Web application", authorized redirect URI = the one
-   Supabase shows on that same settings page).
+   Supabase shows on that same settings page). For GitHub, do the same under
+   **Providers → GitHub** with an OAuth app from your GitHub developer
+   settings. Enable whichever you want; the app offers both.
 2. That's it — no new env vars for the frontend. A "sign in" button appears
    in the navbar top-right; signed-in visitors get a row in `public.users`
    only, never in the member directory.
@@ -138,7 +167,7 @@ don't need it — the rest of the site works fine without it.
 ## Optional: Question of the Day
 
 A fresh daily question on the homepage, generated via OpenRouter, that both
-members and Google-signed-in visitors can answer.
+members and signed-in visitors (Google or GitHub) can answer.
 
 1. Get an API key from [OpenRouter](https://openrouter.ai/settings/keys).
 2. Deploy the generator function: Supabase Dashboard → **Edge Functions** →

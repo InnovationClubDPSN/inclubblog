@@ -59,10 +59,14 @@ on the site is a public `select`; there's no per-user read filtering).
 
 Writes are table-dependent:
 - **Admin-owned tables** (`posts`, `domains`, `galleries`, `profiles`,
-  `announcements`) have *no* direct-write RLS policy at all. `create` /
+  `announcements`, `cyber_week_items`) have *no* direct-write RLS policy at all. `create` /
   `update` / `delete` on these transparently call the `admin_write()` /
   `admin_delete_row()` Postgres RPCs instead, which check an admin session
   token themselves before touching the table.
+- **Cyber Week settings** (`cyber_week_settings`, a single row) are
+  read through `db.entities.CyberWeekSettings` but written only through
+  `db.cyberWeek.saveSettings(patch)`, which calls the
+  `admin_save_cyber_week()` RPC — see "Cyber Awareness Week" below.
 - **Everything else** (comments, likes) writes straight to the table,
   governed by ordinary RLS policies (open insert, no login required).
 - **Member-portal writes** (creating/editing a project, posting a project
@@ -114,7 +118,7 @@ of the Day — goes through a `SECURITY DEFINER` RPC
 this token as its first argument and resolves it back to a `profile_id`
 via `member_resolve_token()`.
 
-### 3. Google/GitHub sign-in for non-members (`src/lib/oauthSession.js`)
+### 3. Google/GitHub sign-in for non-members (`src/lib/oauthSession.js`; button in `UserAuthWidget.jsx`)
 
 A third, optional path for site visitors who are *not* club members — e.g.
 someone answering the Question of the Day who isn't in the roster. This is
@@ -131,8 +135,8 @@ Every table has RLS enabled. The pattern is consistent throughout
 `supabase/schema.sql`:
 
 - **Public content** (`posts`, `domains`, `profiles`, `galleries`,
-  `projects`, `project_updates`, `announcements`, `comments`, `likes`,
-  `qotd`, `qotd_responses`) is readable by anyone (`using (true)`).
+  `projects`, `project_updates`, `announcements`, `cyber_week_items`,
+  `cyber_week_settings`, `comments`, `likes`, `qotd`, `qotd_responses`) is readable by anyone (`using (true)`).
 - **Anonymous-friendly writes** (`comments` insert, `likes` insert/delete)
   have an open `with check (true)` policy — no login needed, matching the
   site's "anyone can comment/like" design.
@@ -229,6 +233,44 @@ continuously from one tile's last picture into the next tile's first;
 elsewhere, build a similar flat list and keep an `index` state variable —
 the component itself has no other dependency on where the images came from.
 
+## Cyber Awareness Week
+
+A self-contained, admin-managed event section. Pieces:
+
+- **Tables** (in `supabase/schema.sql`, and in
+  `supabase/migrations/cyber_week.sql` for databases created before this
+  feature): `cyber_week_items` (`title`, `kind` = `brochure` | `poster`,
+  `file_url`, `file_type` = `pdf` | `image`, `description`, `posted_on`) and
+  `cyber_week_settings`, a single-row table (enforced by a `singleton`
+  boolean primary key) holding `enabled`, `website_url`, `starts_on`,
+  `ends_on`. Both are public `select`, no direct writes.
+- **Writes**: items go through the generic `admin_write()` /
+  `admin_delete_row()` RPCs (`cyber_week_items` is in both whitelists).
+  Settings go through `admin_save_cyber_week(token, patch)`, which only
+  changes the keys present in the patch and rejects a `website_url` that
+  doesn't start with `http(s)://`. All of them validate the admin token.
+- **Helpers** — `src/lib/cyberWeek.js` holds `CYBER_DEFAULTS` and
+  `normalizeSettings()`. The home page and `/cyber-week` merge whatever the
+  database returns over those defaults, so a missing row, or a project that
+  hasn't run the migration yet, still renders (section on, default dates)
+  instead of erroring. The same file has the date helpers: `parseDay()`
+  parses `YYYY-MM-DD` as a *local* date, `eventDayLabel()` gives "Day 01…"
+  relative to `starts_on`, and `groupByDay()` groups items by `posted_on`.
+- **Home banner** — `CyberWeekBanner` is rendered by `Home.jsx` only when
+  `settings.enabled`. Its poster is the static `FALLBACK_POSTER`
+  (`/images/poster/csaw.jpg`); `latestPosterImage()` exists in the helper
+  file to pick the newest uploaded poster, but nothing calls it yet.
+- **`/cyber-week` page** (`src/pages/CyberWeek.jsx`) — lists items grouped
+  by day with an All/Brochures/Posters filter. Images open in the shared
+  `Lightbox`; PDFs open in an in-page viewer (iframe) with an "open in new tab" link. If the
+  section is disabled, the page redirects to `/`.
+- **Admin tab** (`AdminCyberWeek.jsx`, the "Cyber Week" tab in
+  `src/pages/Admin.jsx`) — edits the settings and uploads/edits/deletes
+  items (PDF, JPG, PNG or WEBP, via the usual `UploadFile`). Editing an item
+  changes its metadata only; to swap the file, delete and re-upload.
+- `CountdownBanner.jsx` (a countdown to 27 Oct 2026, 00:00 IST) is in the
+  components folder but not currently mounted on any page.
+
 ## Blog Writers page
 
 `src/pages/BlogWriters.jsx` (`/writers`) doesn't read from a `writers`
@@ -257,8 +299,16 @@ Archive.jsx`), not from the main navbar.
   the table itself is new.
 - **Add a new admin-managed table** — create the table + RLS `select`
   policy in `supabase/schema.sql`, add it to the `TABLES` map in
-  `src/api/dataClient.js`, and add it to the `allowed` whitelist inside
-  `admin_write()` / `admin_delete_row()`.
+  `src/api/dataClient.js` and to `ADMIN_WRITE_TABLES` (and
+  `ADMIN_DELETE_TABLES` if needed) there, and add it to the `allowed`
+  whitelist inside `admin_write()` / `admin_delete_row()`. If the project
+  already exists, also ship the change as a re-runnable file in
+  `supabase/migrations/` (as `cyber_week.sql` does), since those functions
+  have to be redefined in the live database.
+- **Change the Cyber Week dates, link or poster** — dates and link are
+  editable in the admin tab; the defaults used before any row exists are in
+  `CYBER_DEFAULTS` (`src/lib/cyberWeek.js`); the banner poster is
+  `public/images/poster/csaw.jpg`.
 - **Change what a member can self-edit** — extend the `coalesce(...)` list
   in `member_update_profile()`.
 - **Add a shared UI primitive** — `npx shadcn add <component>` (config is
