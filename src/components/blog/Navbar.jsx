@@ -10,6 +10,7 @@ const NAV_LINKS = [
     { label: "Members", to: "/members" },
     { label: "Gallery", to: "/gallery" },
     { label: "Projects", to: "/projects" },
+    { label: "Contact", to: "/contact" },
 ];
 
 export default function Navbar() {
