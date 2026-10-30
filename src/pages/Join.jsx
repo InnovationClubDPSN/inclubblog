@@ -28,17 +28,16 @@ const MONTAGE_SRC = "/videos/montage.mp4";
 const MONTAGE_POSTER = "/videos/montage-poster.jpg";
 
 const STEPS = [
-    { n: "01", t: "Discover an Idea", d: "Start with a problem you want to solve or an idea you're excited to explore. Every project begins with curiosity, and you don't need prior experience to get started." },
-    { n: "02", t: "Create Your Project", d: "Register your project with the club, define your objectives, and outline a roadmap. This becomes the foundation for everything you'll build." },
-    { n: "03", t: "Set Up Your Repository", d: "Create a GitHub repository to organize your code, designs, documentation, and progress. Keeping your work well-documented makes collaboration and development much easier." },
-    { n: "04", t: "Connect with the Community", d: "Reach out to mentors and fellow members for feedback, technical guidance, and collaboration. Share updates, ask questions, and grow alongside a community of builders." },
-    { n: "05", t: "Build, Iterate & Improve", d: "Develop your project through continuous experimentation and testing. Refine your ideas, overcome challenges, and turn early concepts into polished, impactful solutions." },
-    { n: "06", t: "Compete & Showcase", d: "Take your project beyond the club by participating in hackathons, exhibitions, research conferences, and competitions at intercity, national, and international levels. Present your work, gain recognition, and create opportunities for future collaborations and achievements. 🚀" },
+    { n: "01", t: "Create Your Project", d: "Register your project with the club, define your objectives, and outline a roadmap. This becomes the foundation for everything you'll build." },
+    { n: "02", t: "Set Up Your Repository", d: "Create a GitHub repository to organize your code, designs, documentation, and progress. Keeping your work well-documented makes collaboration and development much easier." },
+    { n: "03", t: "Connect with the Community", d: "Reach out to mentors and fellow members for feedback, technical guidance, and collaboration. Share updates, ask questions, and grow alongside a community of builders." },
+    { n: "04", t: "Build, Iterate & Improve", d: "Develop your project through continuous experimentation and testing. Refine your ideas, overcome challenges, and turn early concepts into polished, impactful solutions." },
+    { n: "05", t: "Compete & Showcase", d: "Take your project beyond the club by participating in hackathons, exhibitions, research conferences, and competitions at intercity, national, and international levels. Present your work, gain recognition, and create opportunities for future collaborations and achievements. 🚀" },
 ];
 
 const WHY_JOIN = [
     { icon: Users, t: "Community & Mentorship", d: "Get real help from the community, and learn from seniors who have already walked the path you're on." },
-    { icon: Cpu, t: "Far More Involving", d: "Much more hands-on and impactful than robotics SUPW, which is expensive and often less meaningful." },
+    { icon: Cpu, t: "More Involving, Higher Value", d: "A more hands-on, engaging way to learn and build, and a cost-effective choice that delivers greater value for every student who takes part." },
     { icon: CalendarDays, t: "Weekly Sessions", d: "A steady weekly rhythm of building, learning and sharing, so your projects keep moving forward." },
     { icon: Globe, t: "International Exposure", d: "Work on international projects and get a window into what innovators around the world are building." },
     { icon: Ticket, t: "Run Yuvakarshan", d: "Get behind the scenes of Yuvakarshan, DPS Newtown's annual interschool fest, as part of the club's tech department." },
@@ -52,6 +51,12 @@ const FLAGSHIPS = [
 ];
 
 const WHY_LEFT = WHY_JOIN.slice(0, 4);
+
+const ADMISSION_PATH = [
+    { t: "Build & share in Classes 6–8", d: "Create your projects and send them to us through Innovation Club Interns while you're in middle school." },
+    { t: "Apply in Class 9", d: "Once you reach Class 9, apply to join the club. Intake is capped at 20 new members every year." },
+    { t: "Interview & test", d: "A verbal discussion of your skills and a small test. Your middle-school submissions carry the most weight." },
+];
 const WHY_FEATURE = WHY_JOIN[4];
 
 function MontagePlayer() {
@@ -108,7 +113,7 @@ function StepExplorer() {
 
     return (
         <div>
-            <div className="grid grid-cols-3 gap-px border border-border bg-border md:grid-cols-6">
+            <div className="grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-5">
                 {STEPS.map((s, i) => {
                     const on = i === active;
                     const done = i < active;
@@ -118,7 +123,7 @@ function StepExplorer() {
                             type="button"
                             onClick={() => setActive(i)}
                             aria-pressed={on}
-                            className={`group relative bg-card p-3 text-left transition-colors md:p-4 ${on ? "bg-secondary" : "hover:bg-secondary/60"}`}
+                            className={`group relative bg-card p-3 text-left transition-colors md:p-4 ${i === STEPS.length - 1 ? "col-span-2 md:col-span-1" : ""} ${on ? "bg-secondary" : "hover:bg-secondary/60"}`}
                         >
                             <span className={`block text-[10px] font-bold ${on || done ? "text-brand-pink" : "text-brand-purple"}`}>{s.n}</span>
                             <span className={`mt-1 block text-[11px] font-semibold uppercase leading-tight tracking-tight ${on ? "text-foreground" : "text-muted-foreground"}`}>
@@ -259,7 +264,7 @@ export default function Join() {
                 <section className="mx-auto max-w-5xl px-4 py-16 md:px-8 md:py-20">
                     <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">The path</span>
                     <h2 className="mt-2 text-2xl font-bold uppercase tracking-tight md:text-3xl">How It Works</h2>
-                    <p className="mt-3 max-w-2xl text-sm text-muted-foreground">Tap through the six steps to see what each one involves.</p>
+                    <p className="mt-3 max-w-2xl text-sm text-muted-foreground">Tap through the five steps to see what each one involves.</p>
                     <div className="mt-8">
                         <StepExplorer />
                     </div>
@@ -281,8 +286,21 @@ export default function Join() {
                                     Start Building<span className="block text-brand-purple">Early</span>
                                 </h2>
                                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
-                                    Join <span className="text-foreground">Innovation Club Interns</span> and start sending us your projects. Every project you share will be reviewed during your interview to join the club in Class 9.
+                                    Join <span className="text-foreground">Innovation Club Interns</span> and start sending us your projects. Here's how the path into the club works:
                                 </p>
+                                <ol className="mt-6 space-y-4">
+                                    {ADMISSION_PATH.map((a, i) => (
+                                        <li key={a.t} className="flex gap-4">
+                                            <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-brand-pink/50 text-[11px] font-bold text-brand-pink">
+                                                {i + 1}
+                                            </span>
+                                            <div>
+                                                <p className="text-sm font-bold uppercase tracking-tight">{a.t}</p>
+                                                <p className="mt-1 text-xs leading-relaxed text-muted-foreground md:text-sm">{a.d}</p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ol>
                             </div>
                             <div className="md:col-span-5">
                                 <a
