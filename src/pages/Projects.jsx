@@ -6,7 +6,6 @@ import CursorReticle from "@/components/blog/CursorReticle";
 import Footer from "@/components/blog/Footer";
 import PageHeader from "@/components/blog/PageHeader";
 import Reveal from "@/components/blog/Reveal";
-import DecorArt from "@/components/blog/DecorArt";
 import { Github, Users } from "lucide-react";
 import ProjectLinks from "@/components/blog/ProjectLinks";
 
@@ -46,9 +45,6 @@ export default function Projects() {
                 title="Active Projects"
                 subtitle="Personal projects from members — live timelines, short notes, and GitHub repos."
             />
-            <div className="mx-auto max-w-md px-4 pt-10 md:px-8">
-                <DecorArt variant="circuit" className="mx-auto w-40 opacity-70" />
-            </div>
             <section className="mx-auto max-w-5xl px-4 py-12 md:px-8">
                 {loading ? (
                     <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground animate-blink">// loading projects...</p>
@@ -60,7 +56,7 @@ export default function Projects() {
                             const ups = updatesFor(pr.id);
                             return (
                                 <Reveal key={pr.id}>
-                                    <div className="border border-border bg-card">
+                                    <div className="border border-border bg-card transition-all hover:border-brand-purple/40 hover:shadow-[0_16px_50px_-24px_rgba(100,65,255,0.6)]">
                                         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border p-5">
                                             <div>
                         <span className={`inline-block border px-2 py-0.5 text-[9px] uppercase tracking-[0.15em] ${pr.status === "active" ? "border-brand-purple text-brand-purple" : pr.status === "completed" ? "border-green-500 text-green-500" : "border-muted-foreground text-muted-foreground"}`}>

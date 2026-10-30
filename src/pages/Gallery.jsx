@@ -8,7 +8,6 @@ import CursorReticle from "@/components/blog/CursorReticle";
 import Footer from "@/components/blog/Footer";
 import PageHeader from "@/components/blog/PageHeader";
 import Reveal from "@/components/blog/Reveal";
-import DecorArt from "@/components/blog/DecorArt";
 import Lightbox from "@/components/blog/Lightbox";
 
 // A gallery tile can come from a dedicated gallery entry, or from a blog
@@ -96,9 +95,6 @@ export default function Gallery() {
                 title="Gallery"
                 subtitle="Moments, projects, and experiments from the Innovation Club — captured in pixels."
             />
-            <div className="mx-auto max-w-md px-4 pt-10 md:px-8">
-                <DecorArt variant="wave" className="mx-auto w-48 opacity-70" />
-            </div>
             <section className="mx-auto max-w-7xl px-4 py-16 md:px-8">
                 {loading ? (
                     <div className="border border-dashed border-border py-24 text-center">

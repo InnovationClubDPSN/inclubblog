@@ -25,10 +25,13 @@ export default function Archive({ posts, domains }) {
     return (
         <section id="archive" className="border-b border-border py-20 md:py-28">
             <div className="mx-auto max-w-7xl px-4 md:px-8">
-                <div className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+                <div className="relative mb-10 flex flex-wrap items-end justify-between gap-4 pb-6">
                     <div>
-                        <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">02 — Article archive</span>
-                        <h2 className="mt-2 text-3xl font-bold uppercase tracking-tight md:text-5xl">Browse the Archive</h2>
+                        <span className="flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-brand-pink">
+                            <span className="border border-brand-pink/40 px-1.5 py-0.5">02</span>
+                            Article archive
+                        </span>
+                        <h2 className="mt-3 text-3xl font-extrabold uppercase tracking-tight md:text-5xl">Browse the Archive</h2>
                     </div>
                     <Link
                         to="/writers"
@@ -36,6 +39,8 @@ export default function Archive({ posts, domains }) {
                     >
                         <PenLine className="h-3.5 w-3.5" /> Meet the Writers
                     </Link>
+                    <span className="absolute inset-x-0 bottom-0 h-px bg-border" />
+                    <span className="absolute bottom-0 left-0 h-px w-24 bg-gradient-to-r from-brand-purple to-brand-pink" />
                 </div>
 
                 <div className="mb-10 border border-border bg-card">

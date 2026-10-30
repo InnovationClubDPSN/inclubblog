@@ -13,7 +13,7 @@ export default function Marquee({ items = [], className = "", separator = "/", s
             <div className="marquee-track" style={{ animationDuration: speed + "s", "--marquee-end": loopTo }}>
                 {row.map((it, i) => (
                     <span key={i} className="flex items-center text-2xl font-bold uppercase tracking-tight md:text-4xl">
-            <span className="px-8">{it}</span>
+            <span className="px-8" style={i % 2 ? { color: "transparent", WebkitTextStroke: "1px rgba(255,255,255,0.45)" } : undefined}>{it}</span>
             <span className="text-brand-purple">{separator}</span>
           </span>
                 ))}

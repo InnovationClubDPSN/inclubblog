@@ -5,13 +5,13 @@ import { db } from "@/api/dataClient";
 function FooterLink({ to, href, children }) {
     if (to) {
         return (
-            <Link to={to} className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
+            <Link to={to} className="text-[13px] text-muted-foreground transition-all hover:translate-x-1 hover:text-foreground inline-block">
                 {children}
             </Link>
         );
     }
     return (
-        <a href={href} className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
+        <a href={href} className="text-[13px] text-muted-foreground transition-all hover:translate-x-1 hover:text-foreground inline-block">
             {children}
         </a>
     );
@@ -29,7 +29,8 @@ export default function Footer() {
     }, []);
 
     return (
-        <footer className="bg-brand-black border-t border-border">
+        <footer className="relative bg-brand-black border-t border-border">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-purple to-transparent" />
             <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-28">
                 <div className="mb-16 overflow-hidden border-b border-border pb-16">
                     <h2 className="font-heading text-[16vw] font-extrabold uppercase leading-none tracking-tighter text-transparent md:text-[10rem]" style={{ WebkitTextStroke: "1px rgba(100,65,255,0.5)" }}>
@@ -81,7 +82,6 @@ export default function Footer() {
                     <div>
                         <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">More</span>
                         <ul className="mt-4 space-y-2">
-                            <li><FooterLink to="/gallery">Gallery</FooterLink></li>
                             <li><FooterLink to="/code-of-conduct">Code of Conduct</FooterLink></li>
                             <li><FooterLink to="/join">Join</FooterLink></li>
                             <li><FooterLink to="/contact">Contact</FooterLink></li>

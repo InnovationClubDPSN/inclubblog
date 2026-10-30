@@ -6,7 +6,7 @@ export default function Hero({ featured, stats, announcements }) {
     const s = stats || {};
     const lines = [
         { t: "Innovation", cls: "text-foreground", d: "0.15s" },
-        { t: "Club", cls: "text-brand-purple text-glow-purple", d: "0.3s" },
+        { t: "Club", cls: "bg-gradient-to-r from-brand-purple via-[#a78bfa] to-brand-pink bg-clip-text text-transparent", d: "0.3s" },
     ];
     const blocks = [
         { v: s.posts ?? 0, l: "posts" },
@@ -15,13 +15,13 @@ export default function Hero({ featured, stats, announcements }) {
     ];
 
     return (
-        <section className="relative min-h-screen w-full overflow-hidden border-b border-border blueprint-grid pt-16">
+        <section className="relative min-h-screen w-full overflow-hidden border-b border-border blueprint-grid pt-20">
             <div className="pointer-events-none absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-brand-purple/20 blur-[120px]" />
             <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-brand-pink/15 blur-[120px]" />
 
             <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-0 px-4 md:grid-cols-12 md:px-8">
                 <div className="flex flex-col justify-center py-16 md:col-span-8 md:py-24">
-          <span className="fade-up mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-brand-pink" style={{ animationDelay: "0.05s" }}>
+          <span className="fade-up mb-6 inline-flex w-fit items-center gap-2 border border-brand-pink/30 bg-brand-pink/5 px-3 py-1.5 text-[10px] uppercase tracking-[0.3em] text-brand-pink" style={{ animationDelay: "0.05s" }}>
             <span className="h-1.5 w-1.5 animate-blink rounded-full bg-brand-pink" />
             New articles, updated live
           </span>
@@ -38,11 +38,11 @@ export default function Hero({ featured, stats, announcements }) {
                     <p className="fade-up mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base" style={{ animationDelay: "0.75s" }}>Where curiosity inspires discovery and innovation transforms ideas into meaningful solutions through research, technology, and collaboration.</p>
 
                     <div className="fade-up mt-10 flex flex-wrap items-center gap-4" style={{ animationDelay: "0.9s" }}>
-                        <a href="#feed" className="group flex items-center gap-2 bg-brand-purple px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-black transition-all hover:bg-brand-pink">
+                        <a href="#feed" className="group flex items-center gap-2 bg-brand-purple px-7 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-black shadow-[0_0_30px_-8px_rgba(100,65,255,0.9)] transition-all hover:bg-brand-pink hover:shadow-[0_0_30px_-8px_rgba(255,0,102,0.9)]">
                             Enter the Feed
                             <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
                         </a>
-                        <a href="#archive" className="border border-border px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground transition-colors hover:border-brand-purple hover:text-brand-purple">
+                        <a href="#archive" className="border border-border bg-background/40 px-7 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground transition-colors hover:border-brand-purple hover:text-brand-purple">
                             Query Archive
                         </a>
                     </div>
@@ -52,7 +52,7 @@ export default function Hero({ featured, stats, announcements }) {
                     <AnnouncementPreview items={announcements} />
                     <span className="mb-6 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Latest article</span>
                     {featured ? (
-                        <a href="#feed" className="group block border border-border bg-card p-5 transition-colors hover:border-brand-purple/40">
+                        <a href="#feed" className="group block border border-border bg-card/80 p-5 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-brand-purple/50 hover:shadow-[0_12px_40px_-16px_rgba(100,65,255,0.6)]">
                             <span className="text-[9px] uppercase tracking-[0.2em] text-brand-pink">latest · {featured.category}</span>
                             <h3 className="mt-2 text-base font-bold leading-snug">{featured.title}</h3>
                             <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{featured.subtitle}</p>

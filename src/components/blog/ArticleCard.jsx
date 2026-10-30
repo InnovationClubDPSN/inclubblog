@@ -23,9 +23,10 @@ function Cover({ post, className }) {
                     alt={post.title}
                     loading="lazy"
                     onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    className="relative h-full w-full object-cover opacity-80"
+                    className="relative h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
                 />
             )}
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-card to-transparent" />
             <div className="scan-line" />
         </div>
     );
@@ -42,7 +43,7 @@ export default function ArticleCard({ post, index, featured }) {
             <CardFx className="scan-hover relative col-span-1 flex flex-col border border-border bg-card transition-colors hover:border-brand-purple/40 md:col-span-2 md:row-span-2">
                 <Link to={href} className="group relative flex flex-1 flex-col">
                     <Cover post={post} className="aspect-[16/10] border-b border-border" />
-                    <span className="absolute left-4 top-4 z-20 border border-brand-purple/50 bg-background/60 px-2 py-1 text-[9px] uppercase tracking-[0.2em] text-brand-purple backdrop-blur">
+                    <span className="absolute left-4 top-4 z-20 border border-brand-purple/50 bg-background/70 px-2.5 py-1 text-[9px] uppercase tracking-[0.2em] text-brand-purple backdrop-blur">
             {post.category}
           </span>
                     <div className="flex flex-1 flex-col p-6 md:p-8">

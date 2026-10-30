@@ -5,7 +5,6 @@ import CursorReticle from "@/components/blog/CursorReticle";
 import Footer from "@/components/blog/Footer";
 import PageHeader from "@/components/blog/PageHeader";
 import Reveal from "@/components/blog/Reveal";
-import DecorArt from "@/components/blog/DecorArt";
 import { Github, Linkedin, Search, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +12,7 @@ const skillsList = (s) => (s ? s.split(",").map((t) => t.trim()).filter(Boolean)
 
 function Avatar({ m, size = "h-16 w-16" }) {
     return (
-        <div className={`flex ${size} shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-purple/40 bg-brand-purple/10 text-lg font-bold text-brand-purple`}>
+        <div className={`flex ${size} shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-purple/40 bg-brand-purple/10 text-lg font-bold text-brand-purple ring-2 ring-offset-2 ring-offset-card ring-brand-purple/20 transition-all group-hover:ring-brand-pink/50`}>
             {m.avatar ? (
                 <img src={m.avatar} alt={m.name} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
             ) : (
@@ -91,11 +90,8 @@ export default function Members() {
                 title="The Collective"
                 subtitle="The minds behind the matrix — researchers, builders, and designers engineering the frontier at DPS Newtown."
             />
-            <div className="mx-auto max-w-md px-4 pt-10 md:px-8">
-                <DecorArt variant="grid" className="mx-auto w-40 opacity-70" />
-            </div>
-            <div className="mx-auto max-w-md px-4 md:px-8">
-                <div className="flex items-center gap-2 border border-border bg-card px-3 py-2">
+                        <div className="mx-auto max-w-7xl px-4 pt-10 md:px-8">
+                <div className="flex max-w-md items-center gap-2 border border-border bg-card px-3 py-2.5 transition-colors focus-within:border-brand-purple">
                     <Search className="h-3.5 w-3.5 text-muted-foreground" />
                     <input
                         value={query}
@@ -119,11 +115,12 @@ export default function Members() {
                         {presidents.length > 0 && (
                             <Reveal>
                                 <div>
-                                    <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">// 01 — presidents</span>
+                                    <span className="flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-brand-pink"><span className="h-px w-6 bg-brand-pink" />// 01 — presidents</span>
                                     <h2 className="mt-2 mb-8 text-2xl font-bold uppercase tracking-tight md:text-3xl">Presidents</h2>
                                     <div className={`grid gap-px border border-border bg-border ${colsClass(presidents.length)}`}>
                                         {presidents.map((m) => (
-                                            <div key={m.id} onClick={() => navigate(`/member/${m.id}`)} className="cursor-pointer bg-card p-6 transition-colors hover:bg-brand-purple/5">
+                                            <div key={m.id} onClick={() => navigate(`/member/${m.id}`)} className="group relative cursor-pointer overflow-hidden bg-card p-6 transition-colors hover:bg-brand-purple/5">
+                                                <span className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-brand-purple to-brand-pink transition-transform duration-500 group-hover:scale-x-100" />
                                                 <div className="flex items-center gap-4">
                                                     <Avatar m={m} />
                                                     <div className="min-w-0">
@@ -143,13 +140,14 @@ export default function Members() {
                         {core.length > 0 && (
                             <Reveal>
                                 <div>
-                                    <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">// 02 — core_team</span>
+                                    <span className="flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-brand-pink"><span className="h-px w-6 bg-brand-pink" />// 02 — core_team</span>
                                     <h2 className="mt-2 mb-8 text-2xl font-bold uppercase tracking-tight md:text-3xl">Core Team</h2>
                                     <div className={`grid gap-px border border-border bg-border ${colsClass(core.length)}`}>
                                         {core.map((m) => {
                                             const skills = skillsList(m.skills);
                                             return (
-                                                <div key={m.id} onClick={() => navigate(`/member/${m.id}`)} className="cursor-pointer bg-card p-6 transition-colors hover:bg-brand-purple/5">
+                                                <div key={m.id} onClick={() => navigate(`/member/${m.id}`)} className="group relative cursor-pointer overflow-hidden bg-card p-6 transition-colors hover:bg-brand-purple/5">
+                                                    <span className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-brand-purple to-brand-pink transition-transform duration-500 group-hover:scale-x-100" />
                                                     <div className="flex items-center gap-4">
                                                         <Avatar m={m} />
                                                         <div className="min-w-0">
@@ -186,7 +184,7 @@ export default function Members() {
                         {grouped.length > 0 && (
                             <Reveal>
                                 <div>
-                                    <span className="text-[10px] uppercase tracking-[0.25em] text-brand-pink">// 03 — members</span>
+                                    <span className="flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-brand-pink"><span className="h-px w-6 bg-brand-pink" />// 03 — members</span>
                                     <h2 className="mt-2 mb-8 text-2xl font-bold uppercase tracking-tight md:text-3xl">Members</h2>
                                     <div className="space-y-10">
                                         {grouped.map((g) => (
